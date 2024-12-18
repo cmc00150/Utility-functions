@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Autor: cmc00150
+
+# Description: Print a sequence of emojis from an initial Unicode to a final one
+#              Arg1 - Unicode of the initial emoji (including \U prefix)
+#              Arg2 - Length of the emoji secuence
+#              Arg3 - Number of times emojis will be displayed (default: the same as the length)
+
+# Examples: emoji "\U1F508" 3 20     Print a volumen gift
+#           emoji "\U1F550" 12       Print a clock sequence
+
+function emoji()
+{
+    for ((i=0; i<${3:-$2}; i++))
+    do 
+        tput civis # Set to cursor to be invisible
+        printf -v h "%X" $(( ($i % $2) + 0x${1//\\U/} )) # We remove the prefix \U and add $i modulo $2 to the hexadecimal value
+        echo -ne "\r\U$h" # Add the \U prefix back and display the result
+        sleep 0.2
+        tput cnorm # Set the cursor to its normal state
+    done
+    echo # New line
+}
